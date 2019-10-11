@@ -51,7 +51,6 @@ def CrawModel(new_path, url):
             curl = url  # 分类的第一页，可以不用构造
         else:
             curl = url + '/ppt_' + struct_url + '_' + str(page_num) + '.html' # 该分类的其他页，非第一页
-        print(time.ctime() + ";爬取" + curl + "页")
 
         try:  # 第一种URL格式，带有ppt_
             page = get_html(curl)
@@ -64,7 +63,7 @@ def CrawModel(new_path, url):
                 # curl = url
                 # page = get_html(curl)
                 flag = False
-        print(curl)
+        print(time.ctime() + ";爬取" + curl + "页")
         try:
             ul = page.find('ul', {'class': 'tplist'})
             li = ul.find_all('li')
