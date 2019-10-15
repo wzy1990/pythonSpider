@@ -73,9 +73,11 @@ def CrawModel(new_path, url):
                 h2 = i.find('h2')
                 href = h2.find('a')['href']
                 name = h2.text
-                zip_content = get_html(URL + href)
-                zip_href = zip_content.find('ul', {'class': 'downurllist'}).find('a')['href']
-                f.write(name + ';' + zip_href + '\n')
+                zip_html = get_html(URL + href)
+                zip_href = zip_html.find('ul', {'class': 'downurllist'}).find('a')['href']
+                zip_content = zip_html.find('div', {'class': 'content'}).find('p').find('img')['src']
+                print(zip_content)
+                # f.write(name + ';' + ''.join(zip_content) + ';' + zip_href + '\n')
                 time.sleep(0.2)
                 i_num += 1
                 ErrNum = 0
