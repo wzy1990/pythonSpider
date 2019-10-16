@@ -2,13 +2,11 @@
 # coding:utf-8
 import datetime
 from wordpress_xmlrpc import Client, WordPressPost
-from wordpress_xmlrpc.methods.posts import GetPosts, NewPost
 from wordpress_xmlrpc.methods.users import GetUserInfo
-from wordpress_xmlrpc.methods import posts
+from wordpress_xmlrpc.methods import posts, media
 from wordpress_xmlrpc.methods import taxonomies
 from wordpress_xmlrpc import WordPressTerm
 from wordpress_xmlrpc.compat import xmlrpc_client
-from wordpress_xmlrpc.methods import media, posts
 import importlib, sys
 
 importlib.reload(sys)
