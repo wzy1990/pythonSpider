@@ -1,7 +1,11 @@
 # 首先爬取类别链接并创建大类文件夹
+# pip install pandas
 import requests
 import os
 import time
+import pandas as pd
+
+from numpy import *
 from bs4 import BeautifulSoup as bs
 
 URL = 'http://www.1ppt.com/'
@@ -42,7 +46,9 @@ def judgeName(name):
 def CrawModel(new_path, url):
     # 用于爬取每个类目下的ppt模板\
 
-    f = open(new_path + '\zip_url.txt', 'w', encoding='utf-8')
+    # f = open(new_path + '\zip_url.txt', 'w', encoding='utf-8')
+    post_list = []
+    csv_title = ['标题', '内容详情', '下载地址']
     page_num = 1
     flag = True  # 控制跳出循环
     while True:
@@ -64,6 +70,7 @@ def CrawModel(new_path, url):
                 # page = get_html(curl)
                 flag = False
         print(time.ctime() + ";爬取" + curl + "页")
+
         try:
             ul = page.find('ul', {'class': 'tplist'})
             li = ul.find_all('li')
@@ -72,12 +79,15 @@ def CrawModel(new_path, url):
                 print(time.ctime() + ";打印第" + str(page_num) + "页第" + str(i_num) + "个ppt")
                 h2 = i.find('h2')
                 href = h2.find('a')['href']
-                name = h2.text
+                zip_name = h2.text  # 文章标题
                 zip_html = get_html(URL + href)
-                zip_href = zip_html.find('ul', {'class': 'downurllist'}).find('a')['href']
-                zip_content = zip_html.find('div', {'class': 'content'}).find('p').find('img')['src']
-                print(zip_content)
-                # f.write(name + ';' + ''.join(zip_content) + ';' + zip_href + '\n')
+                zip_href = zip_html.find('ul', {'class': 'downurllist'}).find('a')['href'] # 下载地址
+                zip_content_list = zip_html.find('div', {'class': 'content'}).children     # 文章内容区的所有东西
+                zip_content = ''
+                for item in zip_content_list:
+                    zip_content += str(item).replace('\xa0','').replace('\ufffd','').replace('\u2022','')
+                post_list.append([zip_name, zip_content, zip_href])
+
                 time.sleep(0.2)
                 i_num += 1
                 ErrNum = 0
@@ -92,7 +102,9 @@ def CrawModel(new_path, url):
                 break
         if not flag:
             break
-    f.close()
+
+    post_data = pd.DataFrame(columns=csv_title, data=post_list)
+    post_data.to_csv(new_path + '\zip_url.csv',encoding='UTF-8')
 
 
 def main():

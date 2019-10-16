@@ -1,6 +1,8 @@
 # 带有自定义栏目字段的发布文章代码
+# pip install python-wordpress-xmlrpc
 # coding:utf-8
 import datetime
+import csv
 from wordpress_xmlrpc import Client, WordPressPost
 from wordpress_xmlrpc.methods.users import GetUserInfo
 from wordpress_xmlrpc.methods import posts, media
@@ -10,25 +12,23 @@ from wordpress_xmlrpc.compat import xmlrpc_client
 import importlib, sys
 
 importlib.reload(sys)
-# sys.setdefaultencoding('utf-8')
 HOMEPATH = 'D:\\PPT资源'
-LEIMU = 'PPT图表'
-LANMU = '包含关系'
+LEIMU = 'PPT模板'
+LANMU = '动态PPT模板'
 
 wp = Client('http://47.112.130.142/xmlrpc.php', 'admin', 'wzy19900420')
 
 def getDatas():
-    lanmuList = open(HOMEPATH + '\\' + LEIMU + '\\' + LANMU + '\\zip_url.txt', 'r', encoding='utf-8')
-    line_lanmu = lanmuList.readline().strip()
+    with open(HOMEPATH + '\\' + LEIMU + '\\' + LANMU + '\\zip_url.csv', 'r', encoding='utf-8') as csv_file:
+        csv_reader_lines = csv.reader(csv_file)
+        index = 0
+        for one_line in csv_reader_lines:
+            print(one_line)
+            if index != 0:
+                postBlog(one_line[1], one_line[2], one_line[3])
+            index += 1
 
-    while line_lanmu:
-        line_lanmu_tuple = line_lanmu.split(';')
-        postBlog(line_lanmu_tuple[0], line_lanmu_tuple[1])
-        line_lanmu = lanmuList.readline().strip()
-
-    lanmuList.close()
-
-def postBlog(title, content):
+def postBlog(title, content, downloadUrl):
     post = WordPressPost()
     post.title = title
     post.content = content
@@ -49,7 +49,7 @@ def postBlog(title, content):
         'key': 'wppay_down',
         'value': [{
             'name': '立即下载',
-            'url': content
+            'url': downloadUrl
         }]
     })
     post.custom_fields.append({  # 资源其他信息
