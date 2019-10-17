@@ -46,7 +46,7 @@ def judgeName(name):
 def CrawModel(new_path, url):
     # 用于爬取每个类目下的ppt模板\
 
-    # f = open(new_path + '\zip_url.txt', 'w', encoding='utf-8')
+    f = open(new_path + '\zip_url.txt', 'w', encoding='utf-8')
     post_list = []
     csv_title = ['标题', '内容详情', '下载地址', '素材版本', '文件大小', '显示比例', '附件类型']
     page_num = 1
@@ -98,7 +98,7 @@ def CrawModel(new_path, url):
                 attch_suffix = zip_info_list[6].text.split('：')[1]
                 # 保存这一条文章的全部信息
                 post_list.append([zip_name, zip_content, zip_href, attch_type, attch_size, attch_scale, attch_suffix])
-                f.write(name+';'+zip_href+'\n')
+                f.write(zip_name+';'+zip_href+'\n')
 
                 time.sleep(0.2)
                 i_num += 1
