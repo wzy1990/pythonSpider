@@ -17,7 +17,7 @@ def judgeName(name):
 
 
 # 传入一个当前文件夹名称，对其子文件进行更改名称
-def change_file_name(current_file_path):  # 变量格式：'F://ppt//中国风背景图片//'
+def change_file_name(current_file_path):  # 变量格式：'D://PPT资源//中国风背景图片//'
     print("正在更改" + current_file_path + "文件夹下的内容")
     current_file_names = os.listdir(current_file_path)
     if len(current_file_names) > 2:
@@ -49,16 +49,16 @@ def change_file_name(current_file_path):  # 变量格式：'F://ppt//中国风�
 
 
 def main():
-    with open('F://ppt//url.txt', 'r') as f_root_url:
+    with open('D://PPT资源//url.txt', 'r') as f_root_url:
         zhu_ti_names = f_root_url.readlines()
     for zhu_ti_item in zhu_ti_names:
         print("正在处理" + zhu_ti_item + '_文件夹下的内容')
         zhu_ti_name = split_(zhu_ti_item)[0]  # 提取主题名
-        with open('F://ppt//' + zhu_ti_name + '//url.txt', 'r') as f:
+        with open('D://PPT资源//' + zhu_ti_name + '//url.txt', 'r') as f:
             lei_bie_names = f.readlines()
         for lei_bie_item in lei_bie_names:
             lei_bie_name = judgeName(split_(lei_bie_item)[0])
-            change_file_name('F://ppt//' + zhu_ti_name + '//' + lei_bie_name + '//')
+            change_file_name('D://PPT资源//' + zhu_ti_name + '//' + lei_bie_name + '//')
 
 
 if __name__ == "__main__":

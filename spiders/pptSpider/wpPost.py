@@ -15,26 +15,29 @@ importlib.reload(sys)
 HOMEPATH = 'D:\\PPT资源'
 LEIMU = 'PPT模板'
 LANMU = '动态PPT模板'
+BEGIN = 2 # 第几行开始
 
 wp = Client('http://47.112.130.142/xmlrpc.php', 'admin', 'wzy19900420')
 
 def getDatas():
     with open(HOMEPATH + '\\' + LEIMU + '\\' + LANMU + '\\zip_url.csv', 'r', encoding='utf-8') as csv_file:
         csv_reader_lines = csv.reader(csv_file)
-        index = 0
-        for one_line in csv_reader_lines:
-            print(one_line)
-            if index != 0:
-                postBlog(one_line[1], one_line[2], one_line[3], one_line[4], one_line[5], one_line[6], one_line[7])
+        index = 1
+        for new_blog in csv_reader_lines:
+            print(new_blog)
+            if index >= BEGIN:
+                postBlog(new_blog)
             index += 1
 
-def postBlog(title, content, downloadUrl, type, size, scale, attach):
-    print(type)
+def postBlog(new_blog):
     post = WordPressPost()
-    post.title = title
-    post.content = content
+    post.title = new_blog[1]
     post.post_status = 'publish'  # 文章状态，不写默认是草稿，private表示私密的，draft表示草稿，publish表示发布
-    # post.date = datetime.datetime.today()
+    post.date = new_blog[8]
+
+    post_content = new_blog[2]
+    post_content_split = post_content.split('/> <img', 1)
+    post.content = post_content_split[0] + '/><br/><img' + post_content_split[0]
 
     post.terms_names = {
         'post_tag': [LANMU],  # 文章所属标签，没有则自动创建
@@ -50,23 +53,23 @@ def postBlog(title, content, downloadUrl, type, size, scale, attach):
         'key': 'wppay_down',
         'value': [{
             'name': '立即下载',
-            'url': downloadUrl
+            'url': new_blog[3]
         }]
     })
     post.custom_fields.append({  # 资源其他信息
         'key': 'wppay_info',
         'value': [{
-            'title': type.split('：')[0],
-            'desc': type.split('：')[1]
+            'title': '素材版本',
+            'desc': new_blog[4]
         }, {
-            'title': size.split('：')[0],
-            'desc': size.split('：')[1]
+            'title': '文件大小',
+            'desc': new_blog[5]
         }, {
-            'title': scale.split('：')[0],
-            'desc': scale.split('：')[1]
+            'title': '显示比例',
+            'desc': new_blog[6]
         }, {
-            'title': attach.split('：')[0],
-            'desc': attach.split('：')[1]
+            'title': '附件类型',
+            'desc': new_blog[7]
         }]
     })
     post.id = wp.call(posts.NewPost(post))

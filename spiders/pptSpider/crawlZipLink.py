@@ -42,13 +42,12 @@ def judgeName(name):
             name = name.replace(fh_, '_')
     return name
 
-
+# 用于爬取每个类目下的ppt模板
 def CrawModel(new_path, url):
-    # 用于爬取每个类目下的ppt模板\
 
     f = open(new_path + '\zip_url.txt', 'w', encoding='utf-8')
     post_list = []
-    csv_title = ['标题', '内容详情', '下载地址', '素材版本', '文件大小', '显示比例', '附件类型']
+    csv_title = ['标题', '内容详情', '下载地址', '素材版本', '文件大小', '显示比例', '附件类型', '更新时间']
     page_num = 1
     flag = True  # 控制跳出循环
     while True:
@@ -92,15 +91,17 @@ def CrawModel(new_path, url):
                 # 附件相关信息
                 zip_info_list = zip_html.find('div', {'class': 'info_left'}).find_all('li')
                 print(zip_info_list)
+                attch_time = zip_info_list[1].text.split('：')[1]
                 attch_type = zip_info_list[2].text.split('：')[1]
                 attch_size = zip_info_list[4].text.split('：')[1]
                 attch_scale = zip_info_list[5].text.split('：')[1]
                 attch_suffix = zip_info_list[6].text.split('：')[1]
-                # 保存这一条文章的全部信息
-                post_list.append([zip_name, zip_content, zip_href, attch_type, attch_size, attch_scale, attch_suffix])
+                # 缓存这一条文章的全部信息，以备保存到CSV
+                post_list.append([zip_name, zip_content, zip_href, attch_type, attch_size, attch_scale, attch_suffix, attch_time])
+                # 保存附件名称，下载地址到TXT，供后面下载用
                 f.write(zip_name+';'+zip_href+'\n')
 
-                time.sleep(0.2)
+                time.sleep(0.4)
                 i_num += 1
                 ErrNum = 0
             page_num += 1
@@ -135,11 +136,13 @@ def main():
             path_lanmu = line_lanmu_tuple[0]
             url_lanmu = line_lanmu_tuple[1]
             print(FILE + '\\' + path_leimu + '\\' + path_lanmu, url_lanmu)
-            # print('------'+path_lanmu)
+            # 栏目名称
             path_lanmu = judgeName(path_lanmu)
+            # 创建新的文件夹
             path_cell = creatFile(path_lanmu, FILE=FILE + '\\' + path_leimu + '\\')
             # 爬取模板
             CrawModel(path_cell, url_lanmu)
+            # print(path_lanmu)
             # print(path_cell)
             line_lanmu = f_input_lanmu.readline().strip()
         f_input_lanmu.close()
