@@ -25,15 +25,16 @@ def getDatas():
         for one_line in csv_reader_lines:
             print(one_line)
             if index != 0:
-                postBlog(one_line[1], one_line[2], one_line[3])
+                postBlog(one_line[1], one_line[2], one_line[3], one_line[4], one_line[5], one_line[6], one_line[7])
             index += 1
 
-def postBlog(title, content, downloadUrl):
+def postBlog(title, content, downloadUrl, type, size, scale, attach):
+    print(type)
     post = WordPressPost()
     post.title = title
     post.content = content
     post.post_status = 'publish'  # 文章状态，不写默认是草稿，private表示私密的，draft表示草稿，publish表示发布
-    post.date = datetime.datetime.today()
+    # post.date = datetime.datetime.today()
 
     post.terms_names = {
         'post_tag': [LANMU],  # 文章所属标签，没有则自动创建
@@ -55,14 +56,17 @@ def postBlog(title, content, downloadUrl):
     post.custom_fields.append({  # 资源其他信息
         'key': 'wppay_info',
         'value': [{
-            'title': '附件类型',
-            'desc': '.rar'
+            'title': type.split('：')[0],
+            'desc': type.split('：')[1]
         }, {
-            'title': '显示比例',
-            'desc': '宽屏16:9'
+            'title': size.split('：')[0],
+            'desc': size.split('：')[1]
         }, {
-            'title': '文件大小',
-            'desc': '1752 KB'
+            'title': scale.split('：')[0],
+            'desc': scale.split('：')[1]
+        }, {
+            'title': attach.split('：')[0],
+            'desc': attach.split('：')[1]
         }]
     })
     post.id = wp.call(posts.NewPost(post))
