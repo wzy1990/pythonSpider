@@ -32,7 +32,6 @@ def postBlog(new_blog):
     post = WordPressPost()
     post.title = new_blog[1]
     post.post_status = 'publish'  # 文章状态，不写默认是草稿，private表示私密的，draft表示草稿，publish表示发布
-    # post.date = new_blog[8]
 
     post.content = new_blog[4].replace('\u3000','').replace('\xa0','')
 
@@ -56,6 +55,9 @@ def postBlog(new_blog):
     post.custom_fields.append({  # 资源其他信息
         'key': 'wppay_info',
         'value': [{
+            'title': '作   者',
+            'desc': new_blog[2]
+        }, {
             'title': '题材类型',
             'desc': new_blog[5]
         }, {
@@ -66,9 +68,6 @@ def postBlog(new_blog):
             'desc': new_blog[7]
         }, {
             'title': '是否完结',
-            'desc': new_blog[8]
-        }, {
-            'title': '最近更新时间',
             'desc': new_blog[8]
         }]
     })
