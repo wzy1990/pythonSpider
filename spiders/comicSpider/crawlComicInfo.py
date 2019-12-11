@@ -17,8 +17,17 @@ header = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 UBrowser/6.2.3964.2 Safari/537.36'
 }
 DATA_LIST = [{
+            'directory': '港台漫画',
+            'url': 'https://www.dm5.com/manhua-list-area35'
+        }, {
             'directory': '日韩漫画',
             'url': 'https://www.dm5.com/manhua-list-area36'
+        }, {
+            'directory': '大陆漫画',
+            'url': 'https://www.dm5.com/manhua-list-area37'
+        }, {
+            'directory': '欧美漫画',
+            'url': 'https://www.dm5.com/manhua-list-area52'
         }]
 
 
@@ -98,7 +107,7 @@ def CrawModel(new_path, url):
                 if comic_update:
                     comic_episodes = comic_update.find('a').find('span').text.replace('（', '').replace('）', '')
                 else:
-                    comic_episodes = ''
+                    comic_episodes = '--无资源--'
 
                 # 缓存这一条文章的全部信息，以备保存到CSV
                 print(comic_title + "; " + comic_author + "; " + comic_cover + "; " + comic_content)
@@ -110,7 +119,6 @@ def CrawModel(new_path, url):
                 ErrNum = 0
             page_num += 1
         except:
-            print(ErrNum)
             ErrNum += 1
             if ErrNum < 3:  # 容忍度为3，通过观察很少有连续两张链接不存在的，设置为3是合理的
                 page_num += 1  # 跳转到下一个链接
